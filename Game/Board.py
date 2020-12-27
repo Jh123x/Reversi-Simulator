@@ -82,16 +82,21 @@ class GameBoard(object):
         #Check if any tile will change color
         for x, y in DIRECTIONS:
 
-            # Get starting coord
             mul = 1
             curr_x, curr_y = x_pos + mul * x,  y_pos + mul * y
+            
             #While position is valid look for next valid position
             while self.is_position_valid(curr_x, curr_y):
+
+                #If the flip position is found
                 if self._get_position(curr_x, curr_y) == player:
                     break
+
+                #If the position is empty
                 elif self._get_position(curr_x, curr_y) == 0:
                     curr_x = -1
                     break
+
                 mul += 1
                 curr_x, curr_y = x_pos + mul * x,  y_pos + mul * y
 
