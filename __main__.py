@@ -1,3 +1,4 @@
+import tkinter as tk
 from Game import GameBoard
 from Core.Index import Index
 
@@ -9,8 +10,7 @@ def print_board(board: GameBoard):
 
     print(f"Current turn: {board.current_turn}")
 
-if __name__ == "__main__":
-
+def run_cli():
     #Create the gameboard
     board = GameBoard()
     player_input = ""
@@ -26,3 +26,6 @@ if __name__ == "__main__":
 
         x,y = tuple(map(int, player_input.strip().split(",")))
         board.place(Index.from_one_based(x), Index.from_one_based(y))
+
+if __name__ == "__main__":
+    run_cli()
