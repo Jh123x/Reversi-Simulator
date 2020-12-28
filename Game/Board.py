@@ -115,7 +115,7 @@ class GameBoard(object):
         for row in range(8):
             ac2 = []
             for col in range(8):
-                pos = int(self._get_position(row, col))
+                pos = int(self._get_position(col, row))
                 ac2.append(str(pos))
 
             res = " ".join(ac2)
