@@ -33,8 +33,8 @@ class GameBoard(object):
         """Place the token at the x,y position of the board (0 based)"""
         self._board[x][y] = piece
 
-    def _get_position(self, x:int, y:int):
-        return self._board[x][y]
+    def _get_position(self, x:int, y:int) -> int:
+        return int(self._board[x][y])
 
     def _init_board(self):
         """Restore the board to the initial state"""
