@@ -8,7 +8,7 @@ To do:
 - [ ] Heuristic to make an "AI" that can play the game
 <br>
 {More to be added in the future}
-
+<br>
 Techstack:
 1. Python
 1. Numpy
