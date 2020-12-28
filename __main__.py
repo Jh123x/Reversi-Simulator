@@ -1,7 +1,6 @@
-import tkinter as tk
+from argparse import ArgumentParser
 from CLI.UI import CLI
 from GUI.UI import GUI
-from Core.Index import Index
 
 def run_cli():
     """Run the command line version of the game"""
@@ -9,9 +8,21 @@ def run_cli():
     cli_ui.mainloop()
 
 def run_gui():
-    """Run the game in GUI mode TODO"""
+    """Run the game in GUI mode"""
     gui_ui = GUI()
     gui_ui.mainloop()
 
 if __name__ == "__main__":
-    run_cli()
+
+    #Create parser
+    parser = ArgumentParser()
+    parser.add_argument('-gui', "--gui", action="store_true", help="Run the game in GUI mode")
+
+    #Parse arguments
+    args = parser.parse_args()
+
+    #Run in either CLI or GUI mode
+    if(args.gui):
+        run_gui()
+    else:
+        run_cli()
