@@ -1,5 +1,8 @@
 import pygame
+from tkinter import messagebox
+from Core.Index import Index
 from Game.Board import GameBoard
+from Core.Exceptions import InvalidPositionException, AlreadyTakenException, OutOfBoundsException
 
 class GUI(object):
     def __init__(self, board: GameBoard, width:int, height:int, window_name:str = "Reversi"):
@@ -30,7 +33,11 @@ class GUI(object):
                     pygame.draw.circle(self.screen, (255, 255, 255), dim, self.rad)
 
     def place_on_board(self, position:tuple):
-        pass
+        """Place piece at the position the player picked"""
+        x, y = position
+        x_ind = Index.from_zero_based(int(x // self.x_sep))
+        y_ind = Index.from_zero_based(int(y // self.y_sep))
+        self.board.place(x_ind, y_ind)
     
     def mainloop(self):
         """Main loop to run the GUI"""
@@ -49,7 +56,10 @@ class GUI(object):
                 if event.type == pygame.QUIT:
                     running = False
                 if event.type == pygame.MOUSEBUTTONUP:
-                    self.place_on_board(pygame.mouse.get_pos())
+                    try:
+                        self.place_on_board(pygame.mouse.get_pos())
+                    except (InvalidPositionException, AlreadyTakenException, OutOfBoundsException) as e:
+                        messagebox.showerror(e)
 
             #Draw the background
             self.screen.fill((0,125,0))
