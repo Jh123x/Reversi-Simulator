@@ -28,6 +28,9 @@ class GUI(object):
                     pygame.draw.circle(self.screen, (0, 0, 0), dim, self.rad)
                 elif pos == 2:
                     pygame.draw.circle(self.screen, (255, 255, 255), dim, self.rad)
+
+    def place_on_board(self, position:tuple):
+        pass
     
     def mainloop(self):
         """Main loop to run the GUI"""
@@ -45,6 +48,8 @@ class GUI(object):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+                if event.type == pygame.MOUSEBUTTONUP:
+                    self.place_on_board(pygame.mouse.get_pos())
 
             #Draw the background
             self.screen.fill((0,125,0))
@@ -58,6 +63,7 @@ class GUI(object):
             #Draw onto the screen
             pygame.display.flip()
 
+        #Quit pygame
         pygame.quit()
 
 
