@@ -1,6 +1,7 @@
 from os import system
 from Core.Index import Index
 from Game.Board import GameBoard
+from Core.Exceptions import InvalidPositionException, AlreadyTakenException, OutOfBoundsException
 
 class CLI(object):
     def __init__(self):
@@ -27,26 +28,38 @@ class CLI(object):
             message += "\n"
 
         #Prompt the user for the input
-        return input(f"{message}{self.prompt_msg}")
+        return input(f"{message}{self.prompt_msg}").strip()
+
+    def convert_position(self, user_input:str) -> tuple:
+        """Convert the player input into a position"""
+        split_string = user_input.strip().split(",")
+
+        #Check if the length is correct
+        if len(split_string) != 2 or not "".join(split_string).isdigit():
+            raise InvalidPositionException(f"{user_input}")
+        
+        #Convert the string to integer
+        return tuple(map(int, split_string))
 
     def mainloop(self):
+        """Main loop for the game"""
         #Create the gameboard
         player_input = ""
         err = None
 
         #Game loop
-        while player_input != 'q':
+        while True:
             self.print_state()
             player_input = self.get_user_input(err)
             self.clear_screen()
             if player_input == 'q':
                 break
-            x,y = tuple(map(int, player_input.strip().split(",")))
-
+            
             try:
+                x, y = self.convert_position(player_input)
                 self.board.place(Index.from_one_based(x), Index.from_one_based(y))
                 err = None
-            except Exception as e:
+            except (InvalidPositionException, AlreadyTakenException, OutOfBoundsException) as e:
                 err = str(e)
 
     def __repr__(self):
