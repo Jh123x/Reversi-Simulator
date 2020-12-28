@@ -1,1 +1,1 @@
-from .Board import GameBoard
+from . import Board

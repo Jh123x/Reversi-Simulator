@@ -1,2 +1,2 @@
-from .Index import *
-from .Exceptions import *
+from . import Index
+from . import Exceptions
