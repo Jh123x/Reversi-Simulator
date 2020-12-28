@@ -1,10 +1,66 @@
+import pygame
+from Game.Board import GameBoard
 
 class GUI(object):
-    def __init__(self):
+    def __init__(self, board: GameBoard, width:int, height:int, window_name:str = "Reversi"):
         """GUI window to run the game"""
         super().__init__()
+
+        #Store variables
+        self.width = width
+        self.height = height
+        self.board = board
+        self.x_sep = self.width / 8
+        self.y_sep = self.height / 8
+        self.rad = min(self.x_sep, self.y_sep) // 3
+
+    def draw_grid(self):
+        for x in range(8):
+            for y in range(8):
+                pygame.draw.rect(self.screen, (0, 0, 0), (x * self.x_sep, y * self.y_sep, self.x_sep, self.y_sep), 3)
+
+    def update_board_pieces(self):
+        for x in range(8):
+            for y in range(8):
+                pos = self.board._get_position(x,y)
+                dim = (x * self.x_sep + self.x_sep/2, y * self.y_sep + self.y_sep/2)
+                if pos == 1:
+                    pygame.draw.circle(self.screen, (0, 0, 0), dim, self.rad)
+                elif pos == 2:
+                    pygame.draw.circle(self.screen, (255, 255, 255), dim, self.rad)
     
     def mainloop(self):
         """Main loop to run the GUI"""
-        raise NotImplementedError("Currently not implemented yet")
+
+        #Initialise pygame
+        pygame.init()
+
+        #Set up screen
+        self.screen = pygame.display.set_mode([self.width, self.height])
+
+        running = True
+        while running:
+
+            #Check if the player wants to leave
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+
+            #Draw the background
+            self.screen.fill((0,125,0))
+
+            #Draw the grid
+            self.draw_grid()
+
+            #Update the grid with the board
+            self.update_board_pieces()
+
+            #Draw onto the screen
+            pygame.display.flip()
+
+        pygame.quit()
+
+
+        
+
     
