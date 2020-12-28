@@ -109,6 +109,21 @@ class GameBoard(object):
 
         return len(applied) > 0, applied
 
+    def __repr__(self):
+        """String representation of the current board"""
+        acc = []
+        for row in range(8):
+            ac2 = []
+            for col in range(8):
+                pos = int(self._get_position(row, col))
+                ac2.append(str(pos))
+
+            res = " ".join(ac2)
+            acc.append(res)
+
+        return "\n".join(acc)
+
+
 
         
         
