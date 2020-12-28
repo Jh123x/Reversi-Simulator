@@ -1,5 +1,4 @@
 import pygame
-from tkinter import messagebox
 from Core.Index import Index
 from Game.Board import GameBoard
 from Core.Exceptions import InvalidPositionException, AlreadyTakenException, OutOfBoundsException
@@ -59,7 +58,7 @@ class GUI(object):
                     try:
                         self.place_on_board(pygame.mouse.get_pos())
                     except (InvalidPositionException, AlreadyTakenException, OutOfBoundsException) as e:
-                        messagebox.showerror(e)
+                        print(e)
 
             #Draw the background
             self.screen.fill((0,125,0))
