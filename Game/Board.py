@@ -34,6 +34,7 @@ class GameBoard(object):
         self._board[x][y] = piece
 
     def _get_position(self, x:int, y:int) -> int:
+        """Get the current value at the position (x,y)"""
         return int(self._board[x][y])
 
     def _init_board(self):
@@ -43,6 +44,7 @@ class GameBoard(object):
             self._set_position(x,y,player)
 
     def is_position_valid(self, x:int, y:int) -> bool:
+        """Check if the position is valid"""
         return 0 <= x < WIDTH and 0 <= y < HEIGHT
 
     def place(self, x:Index, y:Index):
