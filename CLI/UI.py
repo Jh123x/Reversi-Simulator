@@ -4,9 +4,9 @@ from Game.Board import GameBoard
 from Core.Exceptions import InvalidPositionException, AlreadyTakenException, OutOfBoundsException
 
 class CLI(object):
-    def __init__(self):
+    def __init__(self, board:GameBoard):
         """CLI runner for the game"""
-        self.board = GameBoard()
+        self.board = board
         self.prompt_msg = "'q' to quit\nWhat is the position to put the piece (x,y): "
 
     def print_state(self):

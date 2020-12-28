@@ -1,16 +1,8 @@
-from argparse import ArgumentParser
+from Game.Board import GameBoard
 from CLI.UI import CLI
 from GUI.UI import GUI
+from argparse import ArgumentParser
 
-def run_cli():
-    """Run the command line version of the game"""
-    cli_ui = CLI()
-    cli_ui.mainloop()
-
-def run_gui():
-    """Run the game in GUI mode"""
-    gui_ui = GUI()
-    gui_ui.mainloop()
 
 if __name__ == "__main__":
 
@@ -21,8 +13,11 @@ if __name__ == "__main__":
     #Parse arguments
     args = parser.parse_args()
 
-    #Run in either CLI or GUI mode
+    #Create the board
+    board = GameBoard()
+
+    runner = CLI(board)
     if(args.gui):
-        run_gui()
-    else:
-        run_cli()
+        runner = GUI(board, 800, 600)
+        
+    runner.mainloop()
