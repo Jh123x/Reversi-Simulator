@@ -47,6 +47,10 @@ class GameBoard(object):
         """Check if the position is valid"""
         return 0 <= x < WIDTH and 0 <= y < HEIGHT
 
+    def get_valid_positions(self) -> list:
+        """Get the possible positions for the player to move"""
+        raise NotImplementedError("This will be implemented in the future")
+
     def place(self, x:Index, y:Index):
         """Place the piece at the position"""
 
