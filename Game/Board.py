@@ -34,7 +34,7 @@ class GameBoard(object):
         """Place the token at the x,y position of the board (0 based)"""
         self._board[x][y] = piece
 
-    def _get_position(self, x: int, y: int) -> int:
+    def get_position(self, x: int, y: int) -> int:
         """Get the current value at the position (x,y)"""
         return int(self._board[x][y])
 
@@ -61,7 +61,7 @@ class GameBoard(object):
             raise OutOfBoundsException(f"({x},{y})")
 
         # Check if the position is already taken
-        if self._get_position(x.zero_index, y.zero_index) != 0:
+        if self.get_position(x.zero_index, y.zero_index) != 0:
             raise AlreadyTakenException(f"({x},{y})", self.current_turn)
 
         # Check if the move is valid
@@ -96,11 +96,11 @@ class GameBoard(object):
             while self.is_position_valid(curr_x, curr_y):
 
                 # If the flip position is found
-                if self._get_position(curr_x, curr_y) == player:
+                if self.get_position(curr_x, curr_y) == player:
                     break
 
                 # If the position is empty
-                elif self._get_position(curr_x, curr_y) == 0:
+                elif self.get_position(curr_x, curr_y) == 0:
                     curr_x = -1
                     break
 
@@ -122,7 +122,7 @@ class GameBoard(object):
         for row in range(8):
             ac2 = []
             for col in range(8):
-                pos = int(self._get_position(col, row))
+                pos = int(self.get_position(col, row))
                 ac2.append(str(pos))
 
             res = " ".join(ac2)
