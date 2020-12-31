@@ -49,12 +49,20 @@ class GameBoard(object):
         """Check if the position is valid"""
         return 0 <= x < WIDTH and 0 <= y < HEIGHT
 
-    def get_valid_positions(self) -> list:
+    def get_valid_positions(self) -> dict:
         """Get the possible positions for the player to move"""
-        raise NotImplementedError("This will be implemented in the future")
+        valid = {}
+        for x in range(8):
+            for y in range(8):
+                is_valid, applied = self.is_valid(x, y, self.current_turn)
+                if is_valid:
+                    valid[(x, y)] = applied
+        return valid
 
-    def place(self, x: Index, y: Index):
-        """Place the piece at the position"""
+    def place(self, x: Index, y: Index) -> bool:
+        """Place the piece at the position
+            Return if the move has been successfully executed
+        """
 
         # Check if the values within range
         if not self.is_position_valid(x.zero_based_index, y.zero_based_index):
@@ -64,13 +72,21 @@ class GameBoard(object):
         if self.get_position(x.zero_index, y.zero_index) != 0:
             raise AlreadyTakenException(f"({x},{y})", self.current_turn)
 
+        # Get valid positions
+        valid_pos = self.get_valid_positions()
+
+        # Check if other player has valid positions to move to
+        if len(valid_pos) == 0:
+            self._current_turn = not self._current_turn
+            return False
+
         # Check if the move is valid
-        is_valid, pieces_shifted = self.is_valid(x.zero_based_index, y.zero_based_index, self.current_turn)
-        if not is_valid:
+        changed = valid_pos.get((x.zero_based_index, y.zero_based_index), None)
+        if not changed:
             raise InvalidPositionException(f"({x}, {y})")
 
         # Change the mutated pieces
-        for mutate_x, mutated_y in pieces_shifted:
+        for mutate_x, mutated_y in changed:
             self._set_position(mutate_x, mutated_y, self.current_turn)
         
         # Place the piece on the board
@@ -78,6 +94,8 @@ class GameBoard(object):
 
         # Toggle player turn
         self._current_turn = not self._current_turn
+
+        return True
 
     def is_valid(self, x_pos: int, y_pos: int, player: int):
         """Check if the move is valid
