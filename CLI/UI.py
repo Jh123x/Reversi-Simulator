@@ -59,8 +59,10 @@ class CLI(object):
             
             try:
                 x, y = self.convert_position(player_input)
-                self.board.place(Index.from_one_based(x), Index.from_one_based(y))
+                placed = self.board.place(Index.from_one_based(x), Index.from_one_based(y))
                 err = None
+                if not placed:
+                    err = f"Player {self.board.current_turn} skipped as there are no spots"
             except (InvalidPositionException, AlreadyTakenException, OutOfBoundsException) as e:
                 err = str(e)
 
