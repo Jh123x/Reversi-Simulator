@@ -10,7 +10,7 @@ class GUI(object):
         super().__init__()
 
         # Store variables
-        self.screen = pygame.display.set_mode([self.width, self.height])
+        self.screen = pygame.display.set_mode([width, height])
         self.window_name = window_name
         self.width = width
         self.height = height
@@ -18,17 +18,27 @@ class GUI(object):
         self.x_sep = self.width / 8
         self.y_sep = self.height / 8
         self.rad = min(self.x_sep, self.y_sep) // 3
+        self.initialise_windows()
+
+    def initialise_windows(self):
+        # Set window name
+        pygame.display.set_caption(self.window_name)
 
     def draw_grid(self):
         for x in range(8):
             for y in range(8):
-                pygame.draw.rect(self.screen, (0, 0, 0), (int(y * self.y_sep), int(x * self.x_sep), int(self.x_sep), int(self.y_sep)), 3)
+                pygame.draw.rect(self.screen, (0, 0, 0),
+                                 (int(y * self.y_sep),
+                                  int(x * self.x_sep),
+                                  int(self.x_sep),
+                                  int(self.y_sep)),
+                                 3)
 
     def update_board_pieces(self):
         for x in range(8):
             for y in range(8):
                 pos = self.board.get_position(x, y)
-                dim = (x * self.x_sep + self.x_sep/2, y * self.y_sep + self.y_sep/2)
+                dim = (x * self.x_sep + self.x_sep / 2, y * self.y_sep + self.y_sep / 2)
                 if pos == 1:
                     pygame.draw.circle(self.screen, (0, 0, 0), dim, self.rad)
                 elif pos == 2:
@@ -40,7 +50,7 @@ class GUI(object):
         x_ind = Index.from_zero_based(int(x // self.x_sep))
         y_ind = Index.from_zero_based(int(y // self.y_sep))
         self.board.place(x_ind, y_ind)
-    
+
     def mainloop(self):
         """Main loop to run the GUI"""
 
