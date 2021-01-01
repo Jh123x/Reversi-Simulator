@@ -1,7 +1,7 @@
 import pygame
-from Core.Index import Index
-from Game.Board import GameBoard
-from Core.Exceptions import InvalidPositionException, AlreadyTakenException, OutOfBoundsException
+from src.Core.Index import Index
+from src.Game.Board import GameBoard
+from src.Core.Exceptions import InvalidPositionException, AlreadyTakenException, OutOfBoundsException
 
 
 class GUI(object):

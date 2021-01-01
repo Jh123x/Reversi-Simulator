@@ -1,7 +1,7 @@
 import numpy as np
-from Core.Index import Index
-from Core.Constants import WIDTH, HEIGHT, DIRECTIONS, STARTING_POSITIONS
-from Core.Exceptions import OutOfBoundsException, AlreadyTakenException, InvalidPositionException
+from src.Core.Index import Index
+from src.Core.Constants import WIDTH, HEIGHT, DIRECTIONS, STARTING_POSITIONS
+from src.Core.Exceptions import OutOfBoundsException, AlreadyTakenException, InvalidPositionException
 
 
 class GameBoard(object):
@@ -29,6 +29,10 @@ class GameBoard(object):
     def board(self):
         """Get the current board"""
         return self._board
+
+    def set_board(self, board):
+        """Set the current board to the input board for testing purposes"""
+        self._board = board
 
     def _set_position(self, x: int, y: int, piece: int):
         """Place the token at the x,y position of the board (0 based)"""
