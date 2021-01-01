@@ -1,10 +1,15 @@
 import pygame
 from src.Core.Index import Index
 from src.Game.Board import GameBoard
-from src.Core.Exceptions import InvalidPositionException, AlreadyTakenException, OutOfBoundsException
+from src.GUI.Direction import DIRECTION
+from src.Core.Exceptions import InvalidPositionException
 
 
 class GUI(object):
+    # Initialise pygame
+    pygame.init()
+    pygame.font.init()
+
     def __init__(self, board: GameBoard, width: int, height: int, window_name: str = "Reversi"):
         """GUI window to run the game"""
         super().__init__()
@@ -17,6 +22,7 @@ class GUI(object):
         self.width = width
         self.height = height
         self.board = board
+        self.font = pygame.font.Font('freesansbold.ttf', 16)
 
         # Calculate separation of grid
         self.x_sep = self.width / 8
@@ -50,11 +56,33 @@ class GUI(object):
         y_ind = Index.from_zero_based(int(y // self.y_sep))
         self.board.place(x_ind, y_ind)
 
+    def write(self, x: int, y: int, message: str, background: tuple = (0, 0, 0),
+              foreground: tuple = (255, 255, 255), direction: DIRECTION = DIRECTION.CENTER):
+        """Write the message on the screen with (x, y) as center"""
+
+        # Render the message
+        msg = self.font.render(message, True, background, foreground)
+
+        # Apply function in Enum to the rect
+        rect = direction(msg.get_rect(), x, y)
+
+        # Draw the rectangle
+        self.screen.blit(msg, rect)
+
+    def draw_ui(self):
+        """Draw the UI to show the score and the current turn"""
+
+        base_height = self.font.get_height() // 2
+        # Draw the turn
+        self.write(0, base_height, f"Current turn: {'Black' if self.board.current_turn == 1 else 'White'}",
+                   direction=DIRECTION.LEFT)
+        black, white = self.board.get_score()
+
+        self.write(self.width, base_height, f"Black score: {black}", direction=DIRECTION.RIGHT)
+        self.write(self.width, self.font.get_height() + base_height, f"White Score: {white}", direction=DIRECTION.RIGHT)
+
     def mainloop(self):
         """Main loop to run the GUI"""
-
-        # Initialise pygame
-        pygame.init()
 
         running = True
         while running:
@@ -77,6 +105,9 @@ class GUI(object):
 
             # Update the grid with the board
             self.update_board_pieces()
+
+            # Draw UI to the screen
+            self.draw_ui()
 
             # Draw onto the screen
             pygame.display.flip()
