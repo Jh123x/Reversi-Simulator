@@ -6,6 +6,7 @@ from src.Core.Exceptions import InvalidPositionException
 
 
 class GUI(object):
+
     # Initialise pygame
     pygame.init()
     pygame.font.init()
