@@ -66,7 +66,7 @@ class GUI(object):
                 if event.type == pygame.MOUSEBUTTONUP:
                     try:
                         self.place_on_board(pygame.mouse.get_pos())
-                    except (InvalidPositionException, AlreadyTakenException, OutOfBoundsException) as e:
+                    except InvalidPositionException as e:
                         print(e)
 
             # Draw the background

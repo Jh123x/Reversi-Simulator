@@ -1,7 +1,7 @@
 from os import system
 from src.Core.Index import Index
 from src.Game.Board import GameBoard
-from src.Core.Exceptions import InvalidPositionException, AlreadyTakenException, OutOfBoundsException
+from src.Core.Exceptions import InvalidPositionException
 
 
 class CLI(object):
@@ -63,7 +63,7 @@ class CLI(object):
                 err = None
                 if not placed:
                     err = f"Player {self.board.current_turn} skipped as there are no spots"
-            except (InvalidPositionException, AlreadyTakenException, OutOfBoundsException) as e:
+            except InvalidPositionException as e:
                 err = str(e)
 
     def __repr__(self):
