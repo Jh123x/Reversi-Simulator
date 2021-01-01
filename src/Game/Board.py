@@ -1,7 +1,7 @@
 import numpy as np
 from src.Core.Index import Index
 from src.Core.Constants import WIDTH, HEIGHT, DIRECTIONS, STARTING_POSITIONS
-from src.Core.Exceptions import OutOfBoundsException, AlreadyTakenException, InvalidPositionException
+from src.Core.Exceptions import InvalidPositionException
 
 
 class GameBoard(object):
@@ -49,11 +49,21 @@ class GameBoard(object):
         """Get the current value at the position (x,y)"""
         return int(self._board[x][y])
 
+    def get_score(self) -> tuple:
+        """Get the score of the game so far
+            (Player 1, Player 2)
+        """
+        return tuple(self._score)
+
     def _init_board(self):
         """Restore the board to the initial state"""
+        # Create the board
         self._board = np.zeros((8, 8))
         for x, y, player in STARTING_POSITIONS:
             self._set_position(x, y, player)
+
+        # Starting Score is 2 each
+        self._score = [2, 2]
 
     def get_valid_positions(self) -> dict:
         """Get the possible positions for the player to move"""
@@ -79,6 +89,10 @@ class GameBoard(object):
         # Change the mutated pieces
         for mutate_x, mutated_y in changed:
             self._set_position(mutate_x, mutated_y, self.current_turn)
+
+        # Update the score
+        self._score[self.current_turn - 1] += len(changed) + 1
+        self._score[self.current_turn % 2] -= len(changed)
         
         # Place the piece on the board
         self._set_position(x.zero_index, y.zero_index, self.current_turn)
