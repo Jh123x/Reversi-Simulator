@@ -24,3 +24,17 @@ class Index(object):
 
     def __repr__(self) -> str:
         return f"{self.one_based_index}"
+
+    def __eq__(self, other):
+        """Check for equality between 2 indices"""
+
+        # Check if the type is the same
+        if type(other) != Index:
+            return False
+
+        # Check if the zero index value is the same
+        if other.zero_index == self.zero_index:
+            return True
+
+        # Otherwise it is not equal
+        return False
