@@ -1,7 +1,7 @@
 from os import system
-from Core.Index import Index
-from Game.Board import GameBoard
-from Core.Exceptions import InvalidPositionException, AlreadyTakenException, OutOfBoundsException
+from src.Core.Index import Index
+from src.Game.Board import GameBoard
+from src.Core.Exceptions import InvalidPositionException, AlreadyTakenException, OutOfBoundsException
 
 
 class CLI(object):
@@ -30,7 +30,7 @@ class CLI(object):
             message += "\n"
 
         # Prompt the user for the input
-        return input(f"{message}{self.prompt_msg}").strip()
+        return input(f"{message}Current Score (p1,p2): {self.board.get_score()}\n{self.prompt_msg}").strip()
 
     @staticmethod
     def convert_position(user_input: str) -> tuple:
