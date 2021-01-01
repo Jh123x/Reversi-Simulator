@@ -9,29 +9,28 @@ class GUI(object):
         """GUI window to run the game"""
         super().__init__()
 
-        # Store variables
+        # Set window features
         self.screen = pygame.display.set_mode([width, height])
-        self.window_name = window_name
+        pygame.display.set_caption(window_name)
+
+        # Store variables
         self.width = width
         self.height = height
         self.board = board
+
+        # Calculate separation of grid
         self.x_sep = self.width / 8
         self.y_sep = self.height / 8
-        self.rad = min(self.x_sep, self.y_sep) // 3
-        self.initialise_windows()
 
-    def initialise_windows(self):
-        # Set window name
-        pygame.display.set_caption(self.window_name)
+        # Calculate radius of Pieces
+        self.rad = min(self.x_sep, self.y_sep) // 3
 
     def draw_grid(self):
         for x in range(8):
             for y in range(8):
-                pygame.draw.rect(self.screen, (0, 0, 0),
-                                 (int(y * self.y_sep),
-                                  int(x * self.x_sep),
-                                  int(self.x_sep),
-                                  int(self.y_sep)),
+                pygame.draw.rect(self.screen,
+                                 (0, 0, 0),
+                                 (int(x * self.x_sep), int(y * self.y_sep), int(self.x_sep), int(self.y_sep)),
                                  3)
 
     def update_board_pieces(self):
