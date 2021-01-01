@@ -6,6 +6,11 @@ from src.Core.Exceptions import OutOfBoundsException, AlreadyTakenException, Inv
 
 class GameBoard(object):
 
+    @staticmethod
+    def is_position_valid(x: int, y: int) -> bool:
+        """Check if the position is valid"""
+        return 0 <= x < WIDTH and 0 <= y < HEIGHT
+
     def __init__(self, board=None, current_turn: bool = False):
         """Board object to keep track of game information"""
 
@@ -17,6 +22,8 @@ class GameBoard(object):
             self._init_board()
         else:
             self._board = np.copy(board.board)
+
+        self.valid_positions = self.get_valid_positions()
 
     @property
     def current_turn(self):
@@ -48,16 +55,11 @@ class GameBoard(object):
         for x, y, player in STARTING_POSITIONS:
             self._set_position(x, y, player)
 
-    @staticmethod
-    def is_position_valid(x: int, y: int) -> bool:
-        """Check if the position is valid"""
-        return 0 <= x < WIDTH and 0 <= y < HEIGHT
-
     def get_valid_positions(self) -> dict:
         """Get the possible positions for the player to move"""
         valid = {}
-        for x in range(8):
-            for y in range(8):
+        for x in range(WIDTH):
+            for y in range(HEIGHT):
                 is_valid, applied = self.is_valid(x, y, self.current_turn)
                 if is_valid:
                     valid[(x, y)] = applied
@@ -68,25 +70,10 @@ class GameBoard(object):
             Return if the move has been successfully executed
         """
 
-        # Check if the values within range
-        if not self.is_position_valid(x.zero_based_index, y.zero_based_index):
-            raise OutOfBoundsException(f"({x},{y})")
-
-        # Check if the position is already taken
-        if self.get_position(x.zero_index, y.zero_index) != 0:
-            raise AlreadyTakenException(f"({x},{y})", self.current_turn)
-
-        # Get valid positions
-        valid_pos = self.get_valid_positions()
-
-        # Check if other player has valid positions to move to
-        if len(valid_pos) == 0:
-            self._current_turn = not self._current_turn
-            return False
-
         # Check if the move is valid
-        changed = valid_pos.get((x.zero_based_index, y.zero_based_index), None)
+        changed = self.valid_positions.get((x.zero_based_index, y.zero_based_index), None)
         if not changed:
+            print(self.valid_positions)
             raise InvalidPositionException(f"({x}, {y})")
 
         # Change the mutated pieces
@@ -98,6 +85,15 @@ class GameBoard(object):
 
         # Toggle player turn
         self._current_turn = not self._current_turn
+
+        # Generate next set of valid moves
+        self.valid_positions = self.get_valid_positions()
+
+        # Check if other player has valid positions to move to
+        if len(self.valid_positions) == 0:
+            self._current_turn = not self._current_turn
+            self.valid_positions = self.get_valid_positions()
+            return False
 
         return True
 
