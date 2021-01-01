@@ -102,6 +102,9 @@ class GameBoard(object):
             x_pos and y_pos are zero based
         """
 
+        if self.get_position(x_pos, y_pos) > 0:
+            return False, []
+
         applied = []
 
         # Check if any tile will change color
