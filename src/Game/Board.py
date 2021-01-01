@@ -83,7 +83,6 @@ class GameBoard(object):
         # Check if the move is valid
         changed = self.valid_positions.get((x.zero_based_index, y.zero_based_index), None)
         if not changed:
-            print(self.valid_positions)
             raise InvalidPositionException(f"({x}, {y})")
 
         # Change the mutated pieces
