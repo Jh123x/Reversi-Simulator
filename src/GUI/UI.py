@@ -10,6 +10,9 @@ class GUI(object):
     # Initialise pygame
     pygame.init()
     pygame.font.init()
+    TURN_MESSAGE = "Current turn: {}"
+    BLACK_SCORE_MSG = "Black score: {}"
+    WHITE_SCORE_MSG = "White score: {}"
 
     def __init__(self, board: GameBoard, width: int, height: int, window_name: str = "Reversi"):
         """GUI window to run the game"""
@@ -26,8 +29,10 @@ class GUI(object):
         self.font = pygame.font.Font('freesansbold.ttf', 16)
 
         # Calculate separation of grid
-        self.x_sep = self.width / 8
-        self.y_sep = self.height / 8
+        self.base_x = 0
+        self.base_y = self.font.get_height() * 3
+        self.x_sep = (self.width - self.base_x) / 8
+        self.y_sep = (self.height - self.base_y) / 8
 
         # Calculate radius of Pieces
         self.rad = min(self.x_sep, self.y_sep) // 3
@@ -37,14 +42,19 @@ class GUI(object):
             for y in range(8):
                 pygame.draw.rect(self.screen,
                                  (0, 0, 0),
-                                 (int(x * self.x_sep), int(y * self.y_sep), int(self.x_sep), int(self.y_sep)),
+                                 (int(x * self.x_sep + self.base_x),
+                                  int(y * self.y_sep + self.base_y),
+                                  int(self.x_sep),
+                                  int(self.y_sep)),
                                  3)
 
     def update_board_pieces(self):
         for x in range(8):
             for y in range(8):
                 pos = self.board.get_position(x, y)
-                dim = (x * self.x_sep + self.x_sep / 2, y * self.y_sep + self.y_sep / 2)
+                x_pos = x * self.x_sep + self.x_sep / 2 + self.base_x
+                y_pos = y * self.y_sep + self.y_sep / 2 + self.base_y
+                dim = (x_pos, y_pos)
                 if pos == 1:
                     pygame.draw.circle(self.screen, (0, 0, 0), dim, self.rad)
                 elif pos == 2:
@@ -53,8 +63,8 @@ class GUI(object):
     def place_on_board(self, position: tuple):
         """Place piece at the position the player picked"""
         x, y = position
-        x_ind = Index.from_zero_based(int(x // self.x_sep))
-        y_ind = Index.from_zero_based(int(y // self.y_sep))
+        x_ind = Index.from_zero_based(int((x - self.base_x) // self.x_sep))
+        y_ind = Index.from_zero_based(int((y - self.base_y) // self.y_sep))
         self.board.place(x_ind, y_ind)
 
     def write(self, x: int, y: int, message: str, background: tuple = (0, 0, 0),
@@ -74,13 +84,16 @@ class GUI(object):
         """Draw the UI to show the score and the current turn"""
 
         base_height = self.font.get_height() // 2
+
         # Draw the turn
-        self.write(0, base_height, f"Current turn: {'Black' if self.board.current_turn == 1 else 'White'}",
+        self.write(0, base_height,
+                   GUI.TURN_MESSAGE.format('Black' if self.board.current_turn == 1 else 'White'),
                    direction=DIRECTION.LEFT)
         black, white = self.board.get_score()
 
-        self.write(self.width, base_height, f"Black score: {black}", direction=DIRECTION.RIGHT)
-        self.write(self.width, self.font.get_height() + base_height, f"White Score: {white}", direction=DIRECTION.RIGHT)
+        self.write(self.width, base_height, GUI.BLACK_SCORE_MSG.format(black), direction=DIRECTION.RIGHT)
+        self.write(self.width, self.font.get_height() + base_height, GUI.WHITE_SCORE_MSG.format(white),
+                   direction=DIRECTION.RIGHT)
 
     def mainloop(self):
         """Main loop to run the GUI"""
