@@ -27,6 +27,7 @@ class GUI(object):
         self.height = height
         self.board = board
         self.font = pygame.font.Font('freesansbold.ttf', 16)
+        self.title = pygame.font.Font('freesansbold.ttf', 32)
 
         # Calculate separation of grid
         self.base_x = 0
@@ -37,18 +38,23 @@ class GUI(object):
         # Calculate radius of Pieces
         self.rad = min(self.x_sep, self.y_sep) // 3
 
-    def draw_grid(self):
+    def draw_grid(self) -> None:
         for x in range(8):
             for y in range(8):
-                pygame.draw.rect(self.screen,
-                                 (0, 0, 0),
-                                 (int(x * self.x_sep + self.base_x),
-                                  int(y * self.y_sep + self.base_y),
-                                  int(self.x_sep),
-                                  int(self.y_sep)),
-                                 3)
+                pygame.draw.rect(
+                    self.screen,
+                    (0, 0, 0),
+                    (int(x * self.x_sep + self.base_x),
+                     int(y * self.y_sep + self.base_y),
+                     int(self.x_sep),
+                     int(self.y_sep)),
+                    3
+                )
 
-    def update_board_pieces(self):
+    def update_board_pieces(self) -> None:
+        winner_msg = self.board.get_winner()
+        if winner_msg is not None:
+            return
         for x in range(8):
             for y in range(8):
                 pos = self.board.get_position(x, y)
@@ -58,21 +64,27 @@ class GUI(object):
                 if pos == 1:
                     pygame.draw.circle(self.screen, (0, 0, 0), dim, self.rad)
                 elif pos == 2:
-                    pygame.draw.circle(self.screen, (255, 255, 255), dim, self.rad)
+                    pygame.draw.circle(
+                        self.screen, (255, 255, 255), dim, self.rad)
 
-    def place_on_board(self, position: tuple):
+    def place_on_board(self, position: tuple) -> None:
         """Place piece at the position the player picked"""
         x, y = position
         x_ind = Index.from_zero_based(int((x - self.base_x) // self.x_sep))
         y_ind = Index.from_zero_based(int((y - self.base_y) // self.y_sep))
         self.board.place(x_ind, y_ind)
 
-    def write(self, x: int, y: int, message: str, background: tuple = (0, 0, 0),
-              foreground: tuple = (255, 255, 255), direction: DIRECTION = DIRECTION.CENTER):
+    def write(
+        self, x: int, y: int, message: str, background: tuple = (0, 0, 0),
+        foreground: tuple = (255, 255, 255), direction: DIRECTION = DIRECTION.CENTER, title: bool = False
+    ) -> None:
         """Write the message on the screen with (x, y) as center"""
 
         # Render the message
-        msg = self.font.render(message, True, background, foreground)
+        if title:
+            msg = self.title.render(message, True, foreground)
+        else:
+            msg = self.font.render(message, True, background, foreground)
 
         # Apply function in Enum to the rect
         rect = direction(msg.get_rect(), x, y)
@@ -80,22 +92,36 @@ class GUI(object):
         # Draw the rectangle
         self.screen.blit(msg, rect)
 
-    def draw_ui(self):
+    def draw_ui(self) -> None:
         """Draw the UI to show the score and the current turn"""
 
         base_height = self.font.get_height() // 2
 
         # Draw the turn
         self.write(0, base_height,
-                   GUI.TURN_MESSAGE.format('Black' if self.board.current_turn == 1 else 'White'),
+                   GUI.TURN_MESSAGE.format(
+                       'Black' if self.board.current_turn == 1 else 'White'),
                    direction=DIRECTION.LEFT)
         black, white = self.board.get_score()
 
-        self.write(self.width, base_height, GUI.BLACK_SCORE_MSG.format(black), direction=DIRECTION.RIGHT)
+        self.write(self.width, base_height, GUI.BLACK_SCORE_MSG.format(
+            black), direction=DIRECTION.RIGHT)
         self.write(self.width, self.font.get_height() + base_height, GUI.WHITE_SCORE_MSG.format(white),
                    direction=DIRECTION.RIGHT)
 
-    def mainloop(self):
+    def draw_end_screen(self):
+        self.write(
+            self.width // 2, self.height // 2 + 32, self.board.get_winner(), title=True
+        )
+        black, white = self.board.get_score()
+        self.write(
+            self.width // 2, self.height // 2, f"Black: {black}", title=True
+        )
+        self.write(
+            self.width // 2, self.height // 2 - 32, f"White: {white}", title=True
+        )
+
+    def mainloop(self) -> None:
         """Main loop to run the GUI"""
 
         running = True
@@ -105,6 +131,7 @@ class GUI(object):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+                    break
                 if event.type == pygame.MOUSEBUTTONUP:
                     try:
                         self.place_on_board(pygame.mouse.get_pos())
@@ -113,6 +140,11 @@ class GUI(object):
 
             # Draw the background
             self.screen.fill((0, 125, 0))
+
+            if self.board.get_winner() is not None:
+                self.draw_end_screen()
+                pygame.display.flip()
+                continue
 
             # Draw the grid
             self.draw_grid()

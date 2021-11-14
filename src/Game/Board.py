@@ -1,3 +1,4 @@
+from typing import Optional
 import numpy as np
 from Core.Index import Index
 from Core.Constants import WIDTH, HEIGHT, DIRECTIONS, STARTING_POSITIONS
@@ -5,6 +6,9 @@ from Core.Exceptions import InvalidPositionException
 
 
 class GameBoard(object):
+
+    DRAW_MESSAGE = "Its a draw"
+    WINNER_MESSAGE = "{winner} wins!"
 
     @staticmethod
     def is_position_valid(x: int, y: int) -> bool:
@@ -16,6 +20,7 @@ class GameBoard(object):
 
         # Store the current player turn
         self._current_turn = current_turn
+        self.turns_taken = 4
 
         # Store the board
         if board is None:
@@ -24,6 +29,12 @@ class GameBoard(object):
             self._board = np.copy(board.board)
 
         self.valid_positions = self.get_valid_positions()
+
+        if len(self.valid_positions) == 0:
+            self._current_turn = not self._current_turn
+            self.valid_positions = self.get_valid_positions()
+            if len(self.valid_positions) == 0:
+                self.turns_taken = 64
 
     @property
     def current_turn(self):
@@ -58,19 +69,26 @@ class GameBoard(object):
     def _init_board(self):
         """Restore the board to the initial state"""
         # Create the board
+
         self._board = np.zeros((8, 8))
+        # self._board = np.ones((8, 8))
+        self._set_position(0, 0, 0)
+        self._set_position(0, 1, 0)
+        self._set_position(0, 2, 0)
         for x, y, player in STARTING_POSITIONS:
             self._set_position(x, y, player)
 
         # Starting Score is 2 each
         self._score = [2, 2]
 
-    def get_valid_positions(self) -> dict:
+    def get_valid_positions(self, piece: int = None) -> dict:
         """Get the possible positions for the player to move"""
+        if piece is None:
+            piece = self.current_turn
         valid = {}
         for x in range(WIDTH):
             for y in range(HEIGHT):
-                is_valid, applied = self.is_valid(x, y, self.current_turn)
+                is_valid, applied = self.is_valid(x, y, piece)
                 if is_valid:
                     valid[(x, y)] = applied
         return valid
@@ -81,7 +99,8 @@ class GameBoard(object):
         """
 
         # Check if the move is valid
-        changed = self.valid_positions.get((x.zero_based_index, y.zero_based_index), None)
+        changed = self.valid_positions.get(
+            (x.zero_based_index, y.zero_based_index), None)
         if not changed:
             raise InvalidPositionException(f"({x}, {y})")
 
@@ -92,7 +111,7 @@ class GameBoard(object):
         # Update the score
         self._score[self.current_turn - 1] += len(changed) + 1
         self._score[self.current_turn % 2] -= len(changed)
-        
+
         # Place the piece on the board
         self._set_position(x.zero_index, y.zero_index, self.current_turn)
 
@@ -102,13 +121,31 @@ class GameBoard(object):
         # Generate next set of valid moves
         self.valid_positions = self.get_valid_positions()
 
+        # Increment the turn counter
+        self.turns_taken += 1
+        print(self.turns_taken)
+
         # Check if other player has valid positions to move to
         if len(self.valid_positions) == 0:
             self._current_turn = not self._current_turn
             self.valid_positions = self.get_valid_positions()
+            if len(self.valid_positions) == 0:
+                self.turns_taken = 64
             return False
 
         return True
+
+    def get_winner(self) -> Optional[str]:
+        if self.turns_taken < 64:
+            return
+
+        if self._score[0] > self._score[1]:
+            return f"{self.WINNER_MESSAGE.format(winner='Black')}"
+
+        if self._score[0] < self._score[1]:
+            return self.WINNER_MESSAGE.format(winner='White')
+
+        return self.DRAW_MESSAGE
 
     def is_valid(self, x_pos: int, y_pos: int, player: int):
         """Check if the move is valid
@@ -125,7 +162,7 @@ class GameBoard(object):
 
             mul = 1
             curr_x, curr_y = x_pos + mul * x,  y_pos + mul * y
-            
+
             # While position is valid look for next valid position
             while self.is_position_valid(curr_x, curr_y):
 
