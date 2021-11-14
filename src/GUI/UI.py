@@ -38,6 +38,9 @@ class GUI(object):
         # Calculate radius of Pieces
         self.rad = min(self.x_sep, self.y_sep) // 3
 
+        # Check if it is the end of the game
+        self.isEnd = self.board.get_winner() is not None
+
     def draw_grid(self) -> None:
         for x in range(8):
             for y in range(8):
@@ -133,6 +136,10 @@ class GUI(object):
                     running = False
                     break
                 if event.type == pygame.MOUSEBUTTONUP:
+                    if self.isEnd:
+                        self.isEnd = False
+                        self.board.reset()
+                        continue
                     try:
                         self.place_on_board(pygame.mouse.get_pos())
                     except InvalidPositionException as e:
@@ -142,6 +149,7 @@ class GUI(object):
             self.screen.fill((0, 125, 0))
 
             if self.board.get_winner() is not None:
+                self.isEnd = True
                 self.draw_end_screen()
                 pygame.display.flip()
                 continue

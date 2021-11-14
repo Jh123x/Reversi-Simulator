@@ -17,16 +17,20 @@ class GameBoard(object):
 
     def __init__(self, board=None, current_turn: bool = False):
         """Board object to keep track of game information"""
+        self.init_curr_turn = current_turn
+        self.init_board = board
+        self.reset()
 
+    def reset(self):
         # Store the current player turn
-        self._current_turn = current_turn
+        self._current_turn = self.init_curr_turn
         self.turns_taken = 4
 
         # Store the board
-        if board is None:
+        if self.init_board is None:
             self._init_board()
         else:
-            self._board = np.copy(board.board)
+            self._board = np.copy(self.init_board.board)
 
         self.valid_positions = self.get_valid_positions()
 
@@ -71,7 +75,6 @@ class GameBoard(object):
         # Create the board
 
         self._board = np.zeros((8, 8))
-        # self._board = np.ones((8, 8))
         self._set_position(0, 0, 0)
         self._set_position(0, 1, 0)
         self._set_position(0, 2, 0)
