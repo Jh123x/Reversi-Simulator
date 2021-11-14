@@ -128,7 +128,10 @@ class GUI(object):
         """Main loop to run the GUI"""
 
         running = True
+        isInvalid = 0
         while running:
+            # Draw the background
+            self.screen.fill((0, 125, 0))
 
             # Check if the player wants to leave
             for event in pygame.event.get():
@@ -143,10 +146,12 @@ class GUI(object):
                     try:
                         self.place_on_board(pygame.mouse.get_pos())
                     except InvalidPositionException as e:
-                        print(e)
+                        isInvalid = 3000
+                        
 
-            # Draw the background
-            self.screen.fill((0, 125, 0))
+            if isInvalid:
+                self.write(self.width // 2, 16, "Invalid Position", title=True)
+                isInvalid -= 1
 
             if self.board.get_winner() is not None:
                 self.isEnd = True
