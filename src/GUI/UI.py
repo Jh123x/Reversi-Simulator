@@ -3,6 +3,7 @@ from Core.Index import Index
 from Game.Board import GameBoard
 from GUI.Direction import DIRECTION
 from Core.Exceptions import InvalidPositionException
+from GUI.State import State
 
 
 class GUI(object):
@@ -28,6 +29,15 @@ class GUI(object):
         self.board = board
         self.font = pygame.font.Font('freesansbold.ttf', 16)
         self.title = pygame.font.Font('freesansbold.ttf', 32)
+        self.notification = 0
+        self.current_state = State.MENU
+
+        # Complete Dict of States
+        self.state_functions = {
+            State.MENU: self.render_menu,
+            State.TWO_PLAYER: self.render_game,
+            State.GAME_OVER: self.render_end,
+        }
 
         # Calculate separation of grid
         self.base_x = 0
@@ -37,9 +47,6 @@ class GUI(object):
 
         # Calculate radius of Pieces
         self.rad = min(self.x_sep, self.y_sep) // 3
-
-        # Check if it is the end of the game
-        self.isEnd = self.board.get_winner() is not None
 
     def draw_grid(self) -> None:
         for x in range(8):
@@ -124,49 +131,64 @@ class GUI(object):
             self.width // 2, self.height // 2 - 32, f"White: {white}", title=True
         )
 
+    def render_game(self, events) -> bool:
+        # Check if the player wants to leave
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONUP:
+                try:
+                    self.place_on_board(pygame.mouse.get_pos())
+                except InvalidPositionException as e:
+                    self.notification = 3000
+                    
+        if self.notification > 0:
+            self.write(self.width // 2, 16, "Invalid Position", title=True)
+            self.notification -= 1
+
+        if self.board.get_winner() is not None:
+            self.current_state = State.GAME_OVER
+            return True
+
+        # Draw the grid
+        self.draw_grid()
+
+        # Update the grid with the board
+        self.update_board_pieces()
+
+        # Draw UI to the screen
+        self.draw_ui()
+
+        return True
+
+    def render_end(self, events) -> bool:
+        self.draw_end_screen()
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONUP:
+                self.board.reset()
+                self.current_state = State.TWO_PLAYER
+
+        return True
+
+    def render_menu(self, event) -> bool:
+        self.current_state = State.TWO_PLAYER
+        return True
+
     def mainloop(self) -> None:
         """Main loop to run the GUI"""
 
         running = True
-        isInvalid = 0
         while running:
             # Draw the background
             self.screen.fill((0, 125, 0))
 
-            # Check if the player wants to leave
-            for event in pygame.event.get():
+            # Call the function of the current state
+            events = pygame.event.get()
+            for event in events:
+
+                # Leave event for all states.
                 if event.type == pygame.QUIT:
-                    running = False
-                    break
-                if event.type == pygame.MOUSEBUTTONUP:
-                    if self.isEnd:
-                        self.isEnd = False
-                        self.board.reset()
-                        continue
-                    try:
-                        self.place_on_board(pygame.mouse.get_pos())
-                    except InvalidPositionException as e:
-                        isInvalid = 3000
-                        
+                    return
 
-            if isInvalid:
-                self.write(self.width // 2, 16, "Invalid Position", title=True)
-                isInvalid -= 1
-
-            if self.board.get_winner() is not None:
-                self.isEnd = True
-                self.draw_end_screen()
-                pygame.display.flip()
-                continue
-
-            # Draw the grid
-            self.draw_grid()
-
-            # Update the grid with the board
-            self.update_board_pieces()
-
-            # Draw UI to the screen
-            self.draw_ui()
+            running = self.state_functions[self.current_state](events)
 
             # Draw onto the screen
             pygame.display.flip()
