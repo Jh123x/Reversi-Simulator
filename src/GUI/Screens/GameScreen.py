@@ -18,9 +18,6 @@ class GameScreen(Screen):
     def __init__(self, screen: pygame.Surface, board: GameBoard):
         super().__init__(screen)
 
-        self.width = screen.get_width()
-        self.height = screen.get_height()
-
         # Calculate separation of grid
         self.base_x = 0
         self.base_y = self.font.get_height() * 3
@@ -98,7 +95,7 @@ class GameScreen(Screen):
                     self.notification = 3000
                     
         if self.notification > 0:
-            self.write(self.width // 2, 16, self.INVALID_POSITION_MSG, title=True)
+            self.write_title(self.width // 2, 16, self.INVALID_POSITION_MSG)
             self.notification -= 1
 
         if self.board.get_winner() is not None:
