@@ -8,3 +8,4 @@ class State(enum.Enum):
     MENU = 1
     AGAINST_AI = 2
     GAME_OVER = 3
+    QUIT = -1

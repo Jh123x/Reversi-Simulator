@@ -5,9 +5,9 @@ from Core.Exceptions import InvalidPositionException
 
 
 class CLI(object):
-    def __init__(self, board: GameBoard):
+    def __init__(self):
         """CLI runner for the game"""
-        self.board = board
+        self.board = GameBoard()
         self.prompt_msg = "'q' to quit\nWhat is the position to put the piece (x,y): "
 
     def print_state(self):

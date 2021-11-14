@@ -13,11 +13,8 @@ if __name__ == "__main__":
     # Parse arguments
     args = parser.parse_args()
 
-    # Create the board
-    board = GameBoard()
-
-    runner = CLI(board)
+    runner = CLI()
     if args.gui:
-        runner = GUI(board, 800, 600)
+        runner = GUI(800, 600)
         
     runner.mainloop()

@@ -74,10 +74,17 @@ class GameBoard(object):
         """Restore the board to the initial state"""
         # Create the board
 
-        self._board = np.zeros((8, 8))
+        # self._board = np.zeros((8, 8))
+
+        ### This section is for testing
+        self._board = np.ones((8, 8))
+
         self._set_position(0, 0, 0)
         self._set_position(0, 1, 0)
         self._set_position(0, 2, 0)
+        ###
+
+
         for x, y, player in STARTING_POSITIONS:
             self._set_position(x, y, player)
 
