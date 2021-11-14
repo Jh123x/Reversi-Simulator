@@ -1,7 +1,7 @@
 import numpy as np
-from src.Core.Index import Index
-from src.Core.Constants import WIDTH, HEIGHT, DIRECTIONS, STARTING_POSITIONS
-from src.Core.Exceptions import InvalidPositionException
+from Core.Index import Index
+from Core.Constants import WIDTH, HEIGHT, DIRECTIONS, STARTING_POSITIONS
+from Core.Exceptions import InvalidPositionException
 
 
 class GameBoard(object):

@@ -1,7 +1,7 @@
 from os import system
-from src.Core.Index import Index
-from src.Game.Board import GameBoard
-from src.Core.Exceptions import InvalidPositionException
+from Core.Index import Index
+from Game.Board import GameBoard
+from Core.Exceptions import InvalidPositionException
 
 
 class CLI(object):
