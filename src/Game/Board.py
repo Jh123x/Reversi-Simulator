@@ -126,7 +126,6 @@ class GameBoard(object):
 
         # Increment the turn counter
         self.turns_taken += 1
-        print(self.turns_taken)
 
         # Check if other player has valid positions to move to
         if len(self.valid_positions) == 0:
