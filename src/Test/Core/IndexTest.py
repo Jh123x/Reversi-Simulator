@@ -1,5 +1,6 @@
 import unittest
-from src.Core.Index import Index
+
+from Core.Index import Index
 
 
 class IndexTest(unittest.TestCase):

@@ -9,3 +9,5 @@
 .idea/vcs.xml
 
 env/
+__pycache__/
+.vscode/

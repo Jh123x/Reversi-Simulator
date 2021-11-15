@@ -3,8 +3,8 @@ from GUI.Screens.EndScreen import EndScreen
 from GUI.Screens.GameScreen import GameScreen
 from GUI.Screens.MenuScreen import MenuScreen
 from Game.Board import GameBoard
-from GUI.Direction import DIRECTION
 from GUI.State import State
+from GUI.Screens.SinglePlayerScreen import SinglePlayerScreen
 
 
 class GUI(object):
@@ -34,6 +34,7 @@ class GUI(object):
             State.MENU: (MenuScreen(self.screen), (0, 125, 0)),
             State.TWO_PLAYER: (GameScreen(self.screen, self.board), (0, 125, 0)),
             State.GAME_OVER: (EndScreen(self.screen, self.board), (0, 0, 0)),
+            State.AGAINST_AI: (SinglePlayerScreen(self.screen, self.board), (0, 125, 0)),
         }
 
     def mainloop(self) -> None:

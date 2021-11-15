@@ -3,6 +3,7 @@ import numpy as np
 from Core.Index import Index
 from Core.Constants import WIDTH, HEIGHT, DIRECTIONS, STARTING_POSITIONS
 from Core.Exceptions import InvalidPositionException
+from Game.PlayerEnum import PlayerTurn
 
 
 class GameBoard(object):
@@ -15,11 +16,15 @@ class GameBoard(object):
         """Check if the position is valid"""
         return 0 <= x < WIDTH and 0 <= y < HEIGHT
 
-    def __init__(self, board=None, current_turn: bool = False):
+    def __init__(self, board=None, current_turn: PlayerTurn = PlayerTurn.BLACK):
         """Board object to keep track of game information"""
         self.init_curr_turn = current_turn
         self.init_board = board
         self.reset()
+
+    def change_turn(self) -> None:
+        """Change the current player turn"""
+        self._current_turn = PlayerTurn.BLACK if self._current_turn == PlayerTurn.WHITE else PlayerTurn.WHITE
 
     def reset(self):
         # Store the current player turn
@@ -35,7 +40,7 @@ class GameBoard(object):
         self.valid_positions = self.get_valid_positions()
 
         if len(self.valid_positions) == 0:
-            self._current_turn = not self._current_turn
+            self.change_turn()
             self.valid_positions = self.get_valid_positions()
             if len(self.valid_positions) == 0:
                 self.turns_taken = 64
@@ -43,9 +48,9 @@ class GameBoard(object):
     @property
     def current_turn(self):
         """Get the current player's turn
-            Either Player 1 or 2
+            Either Black or White
         """
-        return int(self._current_turn) + 1
+        return self._current_turn
 
     @property
     def board(self):
@@ -56,9 +61,9 @@ class GameBoard(object):
         """Set the current board to the input board for testing purposes"""
         self._board = board
 
-    def _set_position(self, x: int, y: int, piece: int):
+    def _set_position(self, x: int, y: int, piece: PlayerTurn):
         """Place the token at the x,y position of the board (0 based)"""
-        self._board[x][y] = piece
+        self._board[x][y] = piece.value
 
     def get_position(self, x: int, y: int) -> int:
         """Get the current value at the position (x,y)"""
@@ -82,7 +87,7 @@ class GameBoard(object):
         # Starting Score is 2 each
         self._score = [2, 2]
 
-    def get_valid_positions(self, piece: int = None) -> dict:
+    def get_valid_positions(self, piece: PlayerTurn = None) -> dict:
         """Get the possible positions for the player to move"""
         if piece is None:
             piece = self.current_turn
@@ -110,14 +115,14 @@ class GameBoard(object):
             self._set_position(mutate_x, mutated_y, self.current_turn)
 
         # Update the score
-        self._score[self.current_turn - 1] += len(changed) + 1
-        self._score[self.current_turn % 2] -= len(changed)
+        self._score[self.current_turn.to_index()] += len(changed) + 1
+        self._score[(self.current_turn.to_index() + 1) % 2] -= len(changed)
 
         # Place the piece on the board
         self._set_position(x.zero_index, y.zero_index, self.current_turn)
 
         # Toggle player turn
-        self._current_turn = not self._current_turn
+        self.change_turn()
 
         # Generate next set of valid moves
         self.valid_positions = self.get_valid_positions()
@@ -127,7 +132,7 @@ class GameBoard(object):
 
         # Check if other player has valid positions to move to
         if len(self.valid_positions) == 0:
-            self._current_turn = not self._current_turn
+            self.change_turn()
             self.valid_positions = self.get_valid_positions()
             if len(self.valid_positions) == 0:
                 self.turns_taken = 64
@@ -147,12 +152,13 @@ class GameBoard(object):
 
         return self.DRAW_MESSAGE
 
-    def is_valid(self, x_pos: int, y_pos: int, player: int):
+    def is_valid(self, x_pos: int, y_pos: int, player: PlayerTurn) -> tuple:
         """Check if the move is valid
             x_pos and y_pos are zero based
         """
 
-        if self.get_position(x_pos, y_pos) > 0:
+        player_value = player.value
+        if self.get_position(x_pos, y_pos) != 0:
             return False, []
 
         applied = []
@@ -167,7 +173,7 @@ class GameBoard(object):
             while self.is_position_valid(curr_x, curr_y):
 
                 # If the flip position is found
-                if self.get_position(curr_x, curr_y) == player:
+                if self.get_position(curr_x, curr_y) == player_value:
                     break
 
                 # If the position is empty

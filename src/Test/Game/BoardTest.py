@@ -1,14 +1,16 @@
 import unittest
 import numpy as np
+
 from random import randint
-from src.Core.Index import Index
-from src.Game.Board import GameBoard
+from Core.Index import Index
+from Game.Board import GameBoard
+from Game.PlayerEnum import PlayerTurn
 
 
 class BoardTest(unittest.TestCase):
 
     # Constants to be used in the test
-    STARTING_TURN = 1
+    STARTING_TURN = PlayerTurn.BLACK
     STARTING_MOVES = {(5, 3), (4, 2), (3, 5), (2, 4)}
     EMPTY_BOARD = np.zeros((8, 8))
 
@@ -26,6 +28,12 @@ class BoardTest(unittest.TestCase):
     def setUp(self) -> None:
         """Create a new board for all the tests"""
         self.board = GameBoard()
+
+    def test_change_turn(self):
+        """Check the turn changing logic is correct"""
+        self.assertEqual(self.board.current_turn, PlayerTurn.BLACK)
+        self.board.change_turn()
+        self.assertEqual(self.board.current_turn, PlayerTurn.WHITE)
 
     def test_initial_state(self):
         """Check the initial state of the board"""
@@ -65,34 +73,38 @@ class BoardTest(unittest.TestCase):
     def test_current_turn(self):
         """Check if the turn cycling is correct"""
         # First turn
-        curr = False
+        curr = PlayerTurn.BLACK
 
         # For each iteration and turn change (Board is only 8x8 at starts with 4 pieces)
         for _ in range(60):
 
             # Check if the turn in the board is correct
-            self.assertEqual(self.board.current_turn, int(curr) + 1)
+            self.assertEqual(self.board.current_turn, curr)
 
             # Take the next possible move and execute it
-            x, y = tuple(self.board.get_valid_positions().keys())[0]
+            positions = self.board.get_valid_positions()
+            assert len(positions) > 0
+            x, y = tuple(positions.keys())[0]
 
             # If turn changed go to the next turn
             turn_changed = self.board.place(Index.from_zero_based(x), Index.from_zero_based(y))
             if turn_changed:
-                curr = not curr
+                curr = PlayerTurn.WHITE if curr == PlayerTurn.BLACK else PlayerTurn.BLACK
 
     def test_place(self):
         """Checks the placing of the pieces"""
         # For each iteration and turn change (Board is only 8x8 at starts with 4 pieces)
         for _ in range(60):
             # Take the next possible move and execute it
-            x, y = tuple(self.board.get_valid_positions().keys())[0]
+            pos = tuple(self.board.get_valid_positions().keys())
+            assert(len(pos) > 0), self.board.get_valid_positions()
+            x, y = pos[0]
             self.assertEqual(0, self.board.get_position(x, y))
 
             # Check if the position is filled after playing
             current_turn = self.board.current_turn
             self.board.place(Index.from_zero_based(x), Index.from_zero_based(y))
-            self.assertEqual(current_turn, self.board.get_position(x, y))
+            self.assertEqual(current_turn.value, self.board.get_position(x, y))
 
 
 if __name__ == '__main__':
