@@ -36,6 +36,10 @@ class GameBoard(object):
             self._init_board()
         else:
             self._board = np.copy(self.init_board.board)
+            self._score = self.init_board._score.copy()
+            self._current_turn = self.init_board.current_turn
+            self.init_curr_turn = self.init_board.init_curr_turn
+            self.init_board = self.init_board.init_board
 
         self.valid_positions = self.get_valid_positions()
 

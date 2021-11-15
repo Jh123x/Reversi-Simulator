@@ -7,6 +7,7 @@ from GUI.Direction import DIRECTION
 from Core.Index import Index
 from Core.Exceptions import InvalidPositionException
 from Game.Board import GameBoard
+from Game.PlayerEnum import PlayerTurn
 
 
 class GameScreen(Screen):
@@ -41,9 +42,9 @@ class GameScreen(Screen):
                 x_pos = x * self.x_sep + self.x_sep / 2 + self.base_x
                 y_pos = y * self.y_sep + self.y_sep / 2 + self.base_y
                 dim = (x_pos, y_pos)
-                if pos == 1:
+                if pos == PlayerTurn.BLACK.value:
                     pygame.draw.circle(self.screen, (0, 0, 0), dim, self.rad)
-                elif pos == 2:
+                elif pos == PlayerTurn.WHITE.value:
                     pygame.draw.circle(
                         self.screen, (255, 255, 255), dim, self.rad)
 
@@ -75,7 +76,7 @@ class GameScreen(Screen):
         # Draw the turn
         self.write(0, base_height,
                    self.TURN_MESSAGE.format(
-                       'Black' if self.board.current_turn == 1 else 'White'),
+                       'Black' if self.board.current_turn == PlayerTurn.BLACK else 'White'),
                    direction=DIRECTION.LEFT)
         black, white = self.board.get_score()
 

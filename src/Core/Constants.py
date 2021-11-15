@@ -19,3 +19,6 @@ DIRECTIONS = (
             (0, -1),
             (1, -1),
         )
+
+
+AI_MOVE_KEY = 'move'
