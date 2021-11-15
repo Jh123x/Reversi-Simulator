@@ -3,7 +3,7 @@ import multiprocessing as mp
 from Core.Constants import AI_MOVE_KEY
 from GUI.Screens.GameScreen import GameScreen
 from GUI.State import State
-from Game.Ai import AI
+from Game.AI.AlphaBetaAi import AlphaBetaAi
 from Game.Board import GameBoard
 from Core.Exceptions.InvalidPositionException import InvalidPositionException
 from Game.PlayerEnum import PlayerTurn
@@ -12,7 +12,7 @@ from Game.PlayerEnum import PlayerTurn
 class SinglePlayerScreen(GameScreen):
     def __init__(self, screen: pygame.Surface, board: GameBoard):
         # AI will take white
-        self.ai = AI()
+        self.ai = AlphaBetaAi()
         self.is_ai_executing = False
 
         # Multiprocess manager

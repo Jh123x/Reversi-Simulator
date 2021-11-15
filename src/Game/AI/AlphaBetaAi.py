@@ -1,10 +1,11 @@
 from numpy import ndarray
 from Core.Constants import AI_MOVE_KEY
 from Core.Index import Index
+from Game.AI.Ai import AI
 from Game.Board import GameBoard
 from Game.PlayerEnum import PlayerTurn
 
-class AI(object):
+class AlphaBetaAi(AI):
     def __init__(self):
         super().__init__()
 
