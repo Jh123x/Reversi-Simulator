@@ -1,5 +1,4 @@
 from Core.Constants import AI_MOVE_KEY
-from Core.Index import Index
 from Game.AI.Ai import AI
 from Game.Board import GameBoard
 from Game.PlayerEnum import PlayerTurn
@@ -48,12 +47,6 @@ class AlphaBetaAi(AI):
                 break
             alpha = min(alpha, value)
         return value
-
-    def to_index(self, x: int, y: int) -> tuple[Index, Index]:
-        """
-        Converts the coordinates to Index
-        """
-        return Index.from_zero_based(x), Index.from_zero_based(y)
 
     def get_move(self, board: GameBoard, result_dict: dict = None) -> tuple[int, int]:
         """
