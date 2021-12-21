@@ -1,14 +1,12 @@
-import Test
-import unittest
+from Test import test_all
 
 from CLI.UI import CLI
 from GUI.UI import GUI
-from Test import test_all
 from argparse import ArgumentParser
 
 
 def run_test():
-    unittest.main()
+    test_all()
 
 
 def run_cli():
@@ -26,6 +24,7 @@ if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument('-g', "--gui", action="store_true",
                         help="Run the game in GUI mode")
+    parser.add_argument('-t', "--test", help="Run tests")
 
     # Parse arguments
     args = parser.parse_args()
@@ -33,5 +32,7 @@ if __name__ == "__main__":
     # Run the modes
     if args.gui:
         run_gui()
+    elif args.test:
+        run_test()
     else:
         run_cli()

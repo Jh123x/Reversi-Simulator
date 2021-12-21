@@ -5,6 +5,12 @@ from Game.PlayerEnum import PlayerTurn
 
 
 class AlphaBetaAi(AI):
+
+    def __init__(self, depth: int = 6):
+        """The alpha beta pruning AI"""
+        super().__init__()
+        self.depth = depth
+
     def get_next_turn(self, current_turn: PlayerTurn):
         PlayerTurn.BLACK if current_turn == PlayerTurn.WHITE else PlayerTurn.WHITE
 
@@ -67,7 +73,11 @@ class AlphaBetaAi(AI):
             x, y = self.to_index(*position)
             cpy.place(x, y)
             score = self.alphaBetaPrune(
-                cpy, depth=6, alpha=-float("inf"), beta=float("inf"))
+                cpy,
+                depth=self.depth,
+                alpha=-float("inf"),
+                beta=float("inf")
+            )
 
             if curr_contender is None or score < curr_score:
                 curr_contender = position

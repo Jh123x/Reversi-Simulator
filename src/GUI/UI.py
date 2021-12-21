@@ -13,7 +13,7 @@ class GUI(object):
     pygame.init()
     pygame.font.init()
 
-    def __init__(self, width: int, height: int, window_name: str = "Reversi"):
+    def __init__(self, width: int, height: int, window_name: str = "Reversi") -> None:
         """GUI window to run the game"""
         super().__init__()
 
@@ -22,7 +22,7 @@ class GUI(object):
         self.height = height
         
         # Set window features
-        self.screen = pygame.display.set_mode([width, height])
+        self.screen = pygame.display.set_mode((width, height))
         pygame.display.set_caption(window_name)
 
         self.board = GameBoard()

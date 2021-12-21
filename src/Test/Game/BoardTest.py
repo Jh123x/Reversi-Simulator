@@ -20,7 +20,8 @@ class BoardTest(unittest.TestCase):
     BOARD_WITH_NO_VALID_MOVE[7, 7] = 0
 
     # Board that is completely filled
-    FILLED_BOARD = EMPTY_BOARD.copy()
+    FILLED_BOARD = np.full((8, 8), 1)
+
     for x in range(8):
         for y in range(8):
             FILLED_BOARD[x][y] = randint(1, 2)
@@ -105,6 +106,18 @@ class BoardTest(unittest.TestCase):
             current_turn = self.board.current_turn
             self.board.place(Index.from_zero_based(x), Index.from_zero_based(y))
             self.assertEqual(current_turn.value, self.board.get_position(x, y))
+
+
+    def test_almost_full_place(self):
+        """Check if the last piece can be placed correctly"""
+        # Set the board with no valid moves when the board is partially filled
+        self.board.set_board(BoardTest.BOARD_WITH_NO_VALID_MOVE)
+
+        # Place the last piece
+        self.board.place(Index.from_zero_based(7), Index.from_zero_based(7))
+
+        # Check if the board is correct
+        self.assertEqual(self.board.get_board(), BoardTest.FILLED_BOARD)
 
 
 if __name__ == '__main__':

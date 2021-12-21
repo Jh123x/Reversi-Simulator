@@ -2,9 +2,6 @@ import pygame
 from GUI.State import State
 import multiprocessing as mp
 from Game.AI.Ai import AI
-
-from Game.AI.AlphaBetaAi import AlphaBetaAi
-from Game.AI.RandomAi import RandomAi
 from Game.AI.GeneticAi import GeneticAI
 
 from Game.Board import GameBoard

@@ -15,7 +15,10 @@ class AI(object):
         """Generate moves for the AI"""
         raise NotImplementedError()
 
-    def get_move(self, board: GameBoard, result_dict: dict = None) -> tuple[int, int]:
+    def get_move(self, board: GameBoard, result_dict: dict = None) -> None:
         """Get the next move of the AI and place it to the dict"""
+        move = self._generate_move(board) 
+        if move is None:
+            return
         if result_dict is not None:
-            result_dict[AI_MOVE_KEY] = self._generate_move(board)
+            result_dict[AI_MOVE_KEY] = move

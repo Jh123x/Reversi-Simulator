@@ -86,7 +86,7 @@ class GameScreen(Screen):
                    direction=DIRECTION.RIGHT)
 
     
-    def render(self, events):
+    def render(self, events) -> State:
         # Check if the player wants to leave
         for event in events:
             if event.type == pygame.MOUSEBUTTONUP:

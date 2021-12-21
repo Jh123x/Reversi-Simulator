@@ -27,6 +27,7 @@ class GameBoard(object):
         self._current_turn = PlayerTurn.BLACK if self._current_turn == PlayerTurn.WHITE else PlayerTurn.WHITE
 
     def reset(self):
+        """Reset to the start configuration"""
         # Store the current player turn
         self._current_turn = self.init_curr_turn
         self.turns_taken = 4
