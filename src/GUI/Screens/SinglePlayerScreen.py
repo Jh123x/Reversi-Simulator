@@ -1,18 +1,24 @@
 import pygame
+from GUI.State import State
 import multiprocessing as mp
+from Game.AI.Ai import AI
+
+from Game.AI.AlphaBetaAi import AlphaBetaAi
+from Game.AI.RandomAi import RandomAi
+from Game.AI.GeneticAi import GeneticAI
+
+from Game.Board import GameBoard
+from Game.PlayerEnum import PlayerTurn
 from Core.Constants import AI_MOVE_KEY
 from GUI.Screens.GameScreen import GameScreen
-from GUI.State import State
-from Game.AI.AlphaBetaAi import AlphaBetaAi
-from Game.Board import GameBoard
 from Core.Exceptions.InvalidPositionException import InvalidPositionException
-from Game.PlayerEnum import PlayerTurn
 
 
 class SinglePlayerScreen(GameScreen):
-    def __init__(self, screen: pygame.Surface, board: GameBoard):
+    def __init__(self, screen: pygame.Surface, board: GameBoard, ai_type: AI = GeneticAI):
         # AI will take white
-        self.ai = AlphaBetaAi()
+
+        self.ai = ai_type()
         self.is_ai_executing = False
 
         # Multiprocess manager
@@ -44,19 +50,18 @@ class SinglePlayerScreen(GameScreen):
             args = (self.board, self.return_dict)
             self.process = mp.Process(target=self.ai.get_move, args=args)
             self.process.start()
-            
 
         if self.is_ai_executing:
             # Tries to get result
             if AI_MOVE_KEY in self.return_dict:
                 self.is_ai_executing = False
                 pos = self.return_dict[AI_MOVE_KEY]
-                
+
                 self.board.place(*self.ai.to_index(*pos))
                 self.process.join()
                 self.process = None
                 del self.return_dict[AI_MOVE_KEY]
-                
+
             else:
                 self.draw_loading()
 

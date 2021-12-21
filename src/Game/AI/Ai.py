@@ -1,5 +1,7 @@
 from Game.Board import GameBoard
 from Core.Index import Index
+from Core.Constants import AI_MOVE_KEY
+
 
 class AI(object):
 
@@ -9,5 +11,11 @@ class AI(object):
         """
         return Index.from_zero_based(x), Index.from_zero_based(y)
 
-    def get_move(self, board: GameBoard, result_dict: dict = None) -> tuple[int, int]:
+    def _generate_move(self, board: GameBoard) -> None:
+        """Generate moves for the AI"""
         raise NotImplementedError()
+
+    def get_move(self, board: GameBoard, result_dict: dict = None) -> tuple[int, int]:
+        """Get the next move of the AI and place it to the dict"""
+        if result_dict is not None:
+            result_dict[AI_MOVE_KEY] = self._generate_move(board)
