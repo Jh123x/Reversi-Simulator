@@ -7,7 +7,7 @@ import pygame
 
 from GUI.Screens.GameScreen import GameScreen
 from Game.AI.AlphaBetaAi import AlphaBetaAi
-from Game.AI.GeneticAi import GeneticAI
+from Game.AI.GeneticAIV1 import GeneticAIV1
 from Game.Board import GameBoard
 from Game.PlayerEnum import PlayerTurn
 
@@ -53,7 +53,7 @@ def render_gui(queue: mp.Queue, board: GameBoard = GameBoard()) -> None:
     pygame.quit()
 
 
-def play(agent: GeneticAI, agent2: GeneticAI = None, gui: bool = False) -> tuple[tuple, Any]:
+def play(agent: GeneticAIV1, agent2: GeneticAIV1 = None, gui: bool = False) -> tuple[tuple, Any]:
     """
     Play agent against other agent
     Other agent is AlphaBetaAi by default
@@ -100,7 +100,7 @@ def mutate(weights: np.ndarray) -> np.ndarray:
     return weights
 
 
-def breed(ai1: GeneticAI, ai2: GeneticAI) -> List[GeneticAI]:
+def breed(ai1: GeneticAIV1, ai2: GeneticAIV1) -> List[GeneticAIV1]:
     """Breed genetic AI to become 4 new AI"""
 
     # Get the weights of the two players
@@ -121,7 +121,7 @@ def breed(ai1: GeneticAI, ai2: GeneticAI) -> List[GeneticAI]:
     # Create the new AI
     t = []
     for weight in new_weights:
-        t.append(GeneticAI(weight))
+        t.append(GeneticAIV1(weight))
     return t
 
 
@@ -139,7 +139,7 @@ def start_training() -> None:
     gui = True
 
     # Create the generations
-    population = [GeneticAI() for _ in range(population_size)]
+    population = [GeneticAIV1() for _ in range(population_size)]
 
     # Check if the previous weights exists
     if os.path.exists(os.path.join(saves, f"1.npy")):
@@ -147,9 +147,9 @@ def start_training() -> None:
         for i in range(2):
             path = os.path.join(saves, f"{i + 1}.npy")
             weights.append(np.load(path))
-        population = [GeneticAI(model=weight) for weight in weights]
+        population = [GeneticAIV1(model=weight) for weight in weights]
         population.extend(breed(*population))
-        population += [GeneticAI()
+        population += [GeneticAIV1()
                        for _ in range(population_size - len(population))]
 
     # Play each generation and get the score
@@ -182,7 +182,7 @@ def start_training() -> None:
 
         # Save the top 2 players
         for i in range(min(2, len(scores))):
-            ai: GeneticAI = scores[i][1]
+            ai: GeneticAIV1 = scores[i][1]
 
             # Bring fwd to next generation
             population.append(ai)
@@ -198,4 +198,4 @@ def start_training() -> None:
         population.extend(mutated)
 
         # Create new generation
-        population += [GeneticAI() for _ in range(population_size - len(population))]
+        population += [GeneticAIV1() for _ in range(population_size - len(population))]

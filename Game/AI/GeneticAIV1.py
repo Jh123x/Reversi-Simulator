@@ -2,11 +2,11 @@ from typing import Optional
 
 import numpy as np
 
-from Game.AI.AlphaBetaAi import AlphaBetaAi
+from Game.AI.Ai import AI
 from Game.Board import GameBoard
 
 
-class GeneticAI(AlphaBetaAi):
+class GeneticAIV1(AI):
     def __init__(self, weights: np.ndarray = None):
         """A genetic ai based on weights"""
         super().__init__()
