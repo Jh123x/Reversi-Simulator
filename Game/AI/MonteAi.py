@@ -1,14 +1,13 @@
+from collections import defaultdict
 from typing import Optional
 
 import numpy as np
-from collections import defaultdict
 
 from Game.AI.Ai import AI
 from Game.Board import GameBoard
 
 
 def rollout_policy(possible_moves):
-
     return possible_moves[np.random.randint(len(possible_moves))]
 
 
