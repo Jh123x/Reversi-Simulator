@@ -1,6 +1,7 @@
 from Core.Constants import AI_MOVE_KEY
 from Core.Index import Index
 from Game.Board import GameBoard
+from Game.PlayerEnum import PlayerTurn
 
 
 class AI(object):
@@ -10,6 +11,10 @@ class AI(object):
         Converts the coordinates to Index
         """
         return Index.from_zero_based(x), Index.from_zero_based(y)
+
+    def get_next_turn(self, current_turn: PlayerTurn) -> PlayerTurn:
+        """Get the next turn of the AI"""
+        return PlayerTurn.BLACK if current_turn == PlayerTurn.WHITE else PlayerTurn.WHITE
 
     def generate_move(self, board: GameBoard) -> None:
         """Generate moves for the AI"""

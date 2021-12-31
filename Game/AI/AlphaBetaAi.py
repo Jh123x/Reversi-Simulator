@@ -3,26 +3,21 @@ from Game.Board import GameBoard
 from Game.PlayerEnum import PlayerTurn
 
 
-def get_next_turn(current_turn: PlayerTurn):
-    return PlayerTurn.BLACK if current_turn == PlayerTurn.WHITE else PlayerTurn.WHITE
-
-
-def base_prune(board: GameBoard) -> int:
-    """Base case pruning"""
-    black, white = board.get_score()
-    num_moves = board.get_valid_positions()
-    score = black - white
-    if board.turns_taken < 30:
-        return score
-    return score - num_moves
-
-
 class AlphaBetaAi(AI):
 
     def __init__(self, depth: int = 7):
         """The alpha beta pruning AI"""
         super().__init__()
         self.depth = depth
+
+    def base_prune(self, board: GameBoard) -> int:
+        """Base case pruning"""
+        black, white = board.get_score()
+        num_moves = board.get_valid_positions()
+        score = black - white
+        if board.turns_taken < 30:
+            return score
+        return score - num_moves
 
     def alphaBetaPrune(self, board: GameBoard, depth: float, alpha: float, beta: int) -> int:
         """
@@ -33,7 +28,7 @@ class AlphaBetaAi(AI):
         current_turn = board.current_turn
 
         if depth == 0 or len(valid_positions) == 0:
-            return base_prune(board)
+            return self.base_prune(board)
 
         # Alpha for black
         if current_turn == PlayerTurn.BLACK:

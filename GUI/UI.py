@@ -1,7 +1,4 @@
-import os.path
-
 import pygame
-import numpy as np
 
 from GUI.Screens.EndScreen import EndScreen
 from GUI.Screens.GameScreen import GameScreen
@@ -9,7 +6,7 @@ from GUI.Screens.MenuScreen import MenuScreen
 from GUI.Screens.SinglePlayerScreen import SinglePlayerScreen
 from GUI.State import State
 from Game.Board import GameBoard
-from Game.AI.MonteAi import MonteAi
+from Game.AI.ReinforcementAgent import ReinforcementAI
 
 
 class GUI(object):
@@ -38,7 +35,7 @@ class GUI(object):
             State.MENU: (MenuScreen(self.screen), (0, 125, 0)),
             State.TWO_PLAYER: (GameScreen(self.screen, self.board), (0, 125, 0)),
             State.GAME_OVER: (EndScreen(self.screen, self.board), (0, 0, 0)),
-            State.AGAINST_AI: (SinglePlayerScreen(self.screen, self.board, MonteAi()), (0, 125, 0)),
+            State.AGAINST_AI: (SinglePlayerScreen(self.screen, self.board, ReinforcementAI()), (0, 125, 0)),
         }
 
     def mainloop(self) -> None:
