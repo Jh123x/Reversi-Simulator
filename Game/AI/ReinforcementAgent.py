@@ -33,6 +33,7 @@ class ReinforcementAI(AlphaBetaAi):
                 loss=self.loss
             )
             self.model = model
+            self.init = True
         reshaped = board.board.reshape((64, 1))
         result = self.model.predict(reshaped)[0][0]
         return result

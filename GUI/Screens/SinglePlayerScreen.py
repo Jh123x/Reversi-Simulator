@@ -47,6 +47,7 @@ class SinglePlayerScreen(GameScreen):
             self.is_ai_executing = True
             args = (self.board, self.return_dict)
             self.process = mp.Process(target=self.ai.get_move, args=args)
+            self.process.daemon = True
             self.process.start()
 
         if self.is_ai_executing:
