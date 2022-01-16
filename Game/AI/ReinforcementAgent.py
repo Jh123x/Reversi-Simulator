@@ -1,6 +1,7 @@
+from tensorflow.keras import models, optimizers
+
 from Game.AI.AlphaBetaAi import AlphaBetaAi
 from Game.Board import GameBoard
-from tensorflow.keras import models, optimizers
 
 
 class ReinforcementAI(AlphaBetaAi):
@@ -26,5 +27,6 @@ class ReinforcementAI(AlphaBetaAi):
 
     def base_prune(self, board: GameBoard) -> int:
         """Pruning the base case based on the NN"""
-        result = self.model.predict(board.board)[0][0]
+        reshaped = board.board.reshape((64, 1))
+        result = self.model.predict(reshaped)[0][0]
         return result

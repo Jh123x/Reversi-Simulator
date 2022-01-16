@@ -1,5 +1,4 @@
 import multiprocessing as mp
-
 import pygame
 
 from Core.Constants import AI_MOVE_KEY
