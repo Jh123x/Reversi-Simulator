@@ -1,4 +1,5 @@
 import pygame
+import os
 
 from GUI.Screens.EndScreen import EndScreen
 from GUI.Screens.GameScreen import GameScreen
@@ -35,7 +36,13 @@ class GUI(object):
             State.MENU: (MenuScreen(self.screen), (0, 125, 0)),
             State.TWO_PLAYER: (GameScreen(self.screen, self.board), (0, 125, 0)),
             State.GAME_OVER: (EndScreen(self.screen, self.board), (0, 0, 0)),
-            State.AGAINST_AI: (SinglePlayerScreen(self.screen, self.board, ReinforcementAI()), (0, 125, 0)),
+            State.AGAINST_AI: (SinglePlayerScreen(
+                self.screen,
+                self.board,
+                ReinforcementAI(
+                    model_path=os.path.join(os.getcwd(), 'Training', 'player_model')
+                )),
+                (0, 125, 0)),
         }
 
     def mainloop(self) -> None:

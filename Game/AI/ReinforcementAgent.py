@@ -1,36 +1,30 @@
 from Game.AI.AlphaBetaAi import AlphaBetaAi
 from Game.Board import GameBoard
-from tensorflow.keras import layers, models, optimizers
+from tensorflow.keras import models, optimizers
 
 
 class ReinforcementAI(AlphaBetaAi):
-    def __init__(self, compiled_model: models.Model = None, learning_rate: float = 0.001) -> None:
-        """A Reinforcement learning AI"""
+    def __init__(self, model_path: str = None, model: models.Model = None, learning_rate: float = 0.001, loss: str = 'mse') -> None:
+        """A Reinforcement learning AI
+            Either must have model path and weights path
+            Or a model (Not compiled)
+        """
+        if model is None and model_path is None:
+            raise ValueError(
+                "Must have model path and weights path or a model")
+
         super().__init__(depth=1)
 
-        if compiled_model is None:
-            model = models.Sequential(
-                layers=[
-                    layers.Dense(
-                        64,
-                        activation='relu',
-                        input_shape=(8, 8)
-                    ),
-                    layers.Dense(64, activation='relu'),
-                    layers.Dense(1, activation='sigmoid'),
-                ]
-            )
+        if model is None:
+            model = models.load_model(model_path)
 
-            model.compile(
-                optimizer=optimizers.Adam(learning_rate=learning_rate),
-                loss='binary_crossentropy'
-            )
-            compiled_model = model
-
-        self.model = compiled_model
+        model.compile(
+            optimizer=optimizers.Adam(learning_rate=learning_rate),
+            loss=loss
+        )
+        self.model = model
 
     def base_prune(self, board: GameBoard) -> int:
         """Pruning the base case based on the NN"""
-        result = self.model.predict(board.board.reshape(1, 8, 8))[0][0]
-        print(result)
+        result = self.model.predict(board.board)[0][0]
         return result

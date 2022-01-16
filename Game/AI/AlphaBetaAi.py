@@ -4,8 +4,7 @@ from Game.PlayerEnum import PlayerTurn
 
 
 class AlphaBetaAi(AI):
-
-    def __init__(self, depth: int = 7):
+    def __init__(self, depth: int = 7) -> None:
         """The alpha beta pruning AI"""
         super().__init__()
         self.depth = depth
@@ -62,8 +61,6 @@ class AlphaBetaAi(AI):
         Returns the position of the move that the AI will make.
         """
 
-        current_turn = board.current_turn
-        assert current_turn == PlayerTurn.WHITE
         curr_contender = None
         curr_score = None
 
