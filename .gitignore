@@ -14,3 +14,4 @@ __pycache__/
 .ipynb_checkpoints/
 saves/
 .idea/
+Training/player_model/
