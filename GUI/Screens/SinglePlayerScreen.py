@@ -13,8 +13,10 @@ from Game.PlayerEnum import PlayerTurn
 
 class SinglePlayerScreen(GameScreen):
     def __init__(self, screen: pygame.Surface, board: GameBoard, ai_type: AI = AlphaBetaAi()) -> None:
-        # AI will take white
+        """The single player screen"""
+        super().__init__(screen, board)
 
+        # AI will take white
         self.ai = ai_type
         self.is_ai_executing = False
 
@@ -22,7 +24,6 @@ class SinglePlayerScreen(GameScreen):
         self.process_manager = mp.Manager()
         self.return_dict = self.process_manager.dict()
         self.process = None
-        super().__init__(screen, board)
 
     def draw_loading(self):
         """

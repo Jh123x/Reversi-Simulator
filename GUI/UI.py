@@ -41,7 +41,8 @@ class GUI(object):
                 self.board,
                 ReinforcementAI(
                     model_path=os.path.join(os.getcwd(), 'Training', 'player_model')
-                )),
+                )
+                ),
                 (0, 125, 0)),
         }
 
