@@ -65,7 +65,10 @@ class AlphaBetaAi(AI):
         curr_score = None
 
         # Start the alpha beta search
-        for position in board.get_valid_positions().keys():
+        valid_positions = board.get_valid_positions()
+        if len(valid_positions) == 1:
+            return list(valid_positions.keys())[0]
+        for position in valid_positions.keys():
             cpy = GameBoard(board)
             x, y = self.to_index(*position)
             cpy.place(x, y)
